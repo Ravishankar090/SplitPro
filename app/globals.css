@@ -1,0 +1,241 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --c-bg: #F0EBE3;
+  --c-surface: #FFFFFF;
+  --c-primary: #1E3A1E;
+  --c-accent: #D4622A;
+  --c-text: #1A1510;
+  --c-muted: #8A7B6C;
+  --c-border: #E0D8CE;
+  --c-green: #2D7D3A;
+  --c-tag: #EDE8E0;
+  --c-amber: #B8740A;
+  --c-amber-bg: #FFF6E0;
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+  overscroll-behavior: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Mobile PWA: remove scroll bounce, full height */
+body {
+  min-height: 100dvh;
+  min-height: -webkit-fill-available;
+}
+
+/* Center layout on tablet/desktop, phone-sized on mobile */
+.app-shell {
+  max-width: 430px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: var(--c-bg);
+  box-shadow: 0 0 40px rgba(0,0,0,0.1);
+}
+
+/* Safe area padding for notched phones */
+.safe-top    { padding-top:    calc(var(--sat) + 12px); }
+.safe-bottom { padding-bottom: calc(var(--sab) + 16px); }
+
+/* Bottom sheet backdrop */
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(20,15,10,0.5);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  max-width: 430px;
+  margin: 0 auto;
+}
+
+/* Sheet container */
+.sheet {
+  background: var(--c-bg);
+  border-radius: 24px 24px 0 0;
+  max-height: 88dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Bottom tab bar */
+.tab-bar {
+  position: sticky;
+  bottom: 0;
+  background: var(--c-surface);
+  border-top: 1px solid var(--c-border);
+  padding-bottom: var(--sab);
+}
+
+/* Card */
+.card {
+  background: var(--c-surface);
+  border-radius: 18px;
+  padding: 14px 16px;
+}
+
+/* Input */
+.input {
+  width: 100%;
+  border: 1.5px solid var(--c-border);
+  border-radius: 12px;
+  padding: 11px 14px;
+  font-size: 15px;
+  background: var(--c-surface);
+  color: var(--c-text);
+  outline: none;
+  font-family: inherit;
+  -webkit-appearance: none;
+}
+
+.input:focus { border-color: var(--c-primary); }
+
+/* Buttons */
+.btn-primary {
+  background: var(--c-primary);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  padding: 13px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  font-family: inherit;
+  transition: opacity 0.15s;
+}
+.btn-primary:disabled { background: #C8C2BA; cursor: not-allowed; }
+.btn-primary:active:not(:disabled) { opacity: 0.85; }
+
+.btn-ghost {
+  background: var(--c-tag);
+  color: var(--c-text);
+  border: none;
+  border-radius: 14px;
+  padding: 13px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  font-family: inherit;
+}
+
+/* Section label */
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--c-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+/* Avatar */
+.avatar {
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  flex-shrink: 0;
+  letter-spacing: -0.3px;
+}
+
+/* FAB */
+.fab {
+  position: fixed;
+  bottom: calc(80px + var(--sab));
+  right: max(20px, calc((100vw - 430px) / 2 + 20px));
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--c-primary);
+  color: #fff;
+  border: none;
+  font-size: 26px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(30,58,30,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 30;
+}
+
+/* Scroll area */
+.scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Amount display */
+.amount {
+  font-family: -apple-system, BlinkMacSystemFont, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Toggle switch */
+.toggle-track {
+  width: 44px;
+  height: 26px;
+  border-radius: 13px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+  position: relative;
+  flex-shrink: 0;
+}
+.toggle-thumb {
+  position: absolute;
+  top: 3px;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  transition: left 0.2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
+/* Spinner */
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner {
+  border: 2.5px solid var(--c-border);
+  border-top-color: var(--c-primary);
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+
+/* Slide up animation for sheets */
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+.sheet { animation: slideUp 0.28s cubic-bezier(0.32,0.72,0,1); }
+
+/* Frequency pill */
+.freq-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 6px;
+  color: #fff;
+}
