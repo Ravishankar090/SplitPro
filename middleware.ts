@@ -1,4 +1,4 @@
-import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
@@ -10,8 +10,10 @@ export async function middleware(request: NextRequest) {
     {
       cookies: {
         getAll() { return request.cookies.getAll(); },
-        setAll(cookiesToSet: { name: string; value: string; options?: CookieOptions }[]) {
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) =>
+            request.cookies.set(name, value)
+          );
           supabaseResponse = NextResponse.next({ request });
           cookiesToSet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, options)
@@ -23,19 +25,28 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
   const { pathname } = request.nextUrl;
-  const authRoutes = ["/login", "/verify", "/onboard"];
-  const isAuthRoute = authRoutes.some(r => pathname.startsWith(r));
 
-  if (!user && !isAuthRoute) {
+  // Public routes — always accessible
+  if (pathname.startsWith("/login") || pathname.startsWith("/verify")) {
+    return supabaseResponse;
+  }
+
+  // Not logged in — send to login
+  if (!user) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (user && isAuthRoute && pathname !== "/onboard") {
-    const { data } = await supabase.from("profiles")
-      .select("name").eq("id", user.id).single();
-    const profile = data as { name: string } | null;
-    if (!profile?.name) return NextResponse.redirect(new URL("/onboard", request.url));
-    return NextResponse.redirect(new URL("/bills", request.url));
+  // Logged in but hasn't set up profile yet — send to onboard
+  if (pathname !== "/onboard") {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("name, group_id")
+      .eq("id", user.id)
+      .single();
+
+    if (!profile?.name || !profile?.group_id) {
+      return NextResponse.redirect(new URL("/onboard", request.url));
+    }
   }
 
   return supabaseResponse;
